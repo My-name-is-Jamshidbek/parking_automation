@@ -1,0 +1,32 @@
+<!-- templates/customers/customer_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Customer List</h2>
+<a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Add New Customer</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Car name</th>
+            <th>Vehicle number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in object_list %}
+        <tr>
+            <td>{{ customer.id }}</td>
+            <td>{{ customer.fullname }}</td>
+            <td>{{ customer.carname }}</td>
+            <td>{{ customer.vehicle_number }}</td>
+            <td>
+                <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
+                <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -2,7 +2,8 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.db import models
 from django.conf import settings  # If you're using the default auth user model
-
+from django.utils import timezone
+import datetime
 
 # Existing Price model
 class Price(models.Model):
@@ -25,23 +26,15 @@ class Seat(models.Model):
 # New Customer model
 class Customer(models.Model):
     fullname = models.CharField(max_length=255, null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    seat = models.ForeignKey(Seat, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
+    seat = models.ForeignKey('Seat', on_delete=models.CASCADE, default=Seat.objects.first().pk)
     vehicle_number = models.CharField(max_length=255)
-    arrival_time = models.DateTimeField()
-    leave_time = models.DateTimeField(null=True, blank=True)
-    stay_time = models.DurationField(null=True, blank=True)
-    hourly_price = models.BigIntegerField()  # Changed from ForeignKey to BigIntegerField
-    total_price = models.BigIntegerField()
+    arrival_time = models.DateTimeField(default=timezone.now)
+    leave_time = models.DateTimeField(null=True, blank=True, default=timezone.now() + datetime.timedelta(hours=2))
+    stay_time = models.DurationField(null=True, blank=True, editable=False)
+    hourly_price = models.ForeignKey('Price', on_delete=models.SET_NULL, null=True, default=Price.objects.first().pk)
+    total_price = models.BigIntegerField(default=0, editable=False)
     carname = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.fullname or f"Customer {self.id}"
-
-
-@receiver(pre_delete, sender=Price)
-def update_hourly_price(sender, instance, **kwargs):
-    customers = Customer.objects.filter(hourly_price=instance.price)
-    for customer in customers:
-        customer.hourly_price = instance.price  # Set to the price of the Price instance being deleted
-        customer.save()
