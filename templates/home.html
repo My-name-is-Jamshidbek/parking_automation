@@ -1,0 +1,16 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the Price Management System!</h1>
+    <p class="lead">This is a simple system to manage pricing.</p>
+    <hr class="my-4">
+    <p>Click the button below to view prices.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'price-list' %}" role="button">View Prices</a>
+</div>
+{% endblock %}

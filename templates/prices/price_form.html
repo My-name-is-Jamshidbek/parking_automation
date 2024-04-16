@@ -1,0 +1,12 @@
+<!-- templates/prices/price_form.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if object %}Edit Price{% else %}Add Price{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a href="{% url 'price-list' %}" class="btn btn-secondary">Back to List</a>
+</form>
+{% endblock %}

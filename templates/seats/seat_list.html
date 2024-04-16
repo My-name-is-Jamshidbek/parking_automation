@@ -1,0 +1,32 @@
+<!-- seat_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Seat List</h2>
+<a href="{% url 'seat-add' %}" class="btn btn-primary">Add New Seat</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Place Name</th>
+            <th>Explanation</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for seat in object_list %}
+        <tr>
+            <td>{{ seat.id }}</td>
+            <td>{{ seat.place_name }}</td>
+            <td>{{ seat.explanation }}</td>
+            <td>
+                <a href="{% url 'seat-update' seat.id %}" class="btn btn-secondary">Edit</a>
+                <a href="{% url 'seat-delete' seat.id %}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No seats found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
