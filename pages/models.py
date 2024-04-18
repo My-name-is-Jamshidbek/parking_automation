@@ -5,6 +5,7 @@ from django.conf import settings  # If you're using the default auth user model
 from django.utils import timezone
 import datetime
 
+
 # Existing Price model
 class Price(models.Model):
     price = models.BigIntegerField()
@@ -18,6 +19,7 @@ class Price(models.Model):
 class Seat(models.Model):
     place_name = models.CharField(max_length=255)  # The max_length should be defined based on your varchar requirements
     explanation = models.TextField(null=True, blank=True)  # The question mark indicates that this field can be null
+    status = models.BooleanField(default=False)  # New status field with default set to False
 
     def __str__(self):
         return self.place_name
@@ -38,3 +40,12 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.fullname or f"Customer {self.id}"
+
+    def customer_is_gone(self):
+        """ Update leave time and calculate the total price when a customer leaves """
+        self.leave_time = timezone.now()
+        if self.arrival_time and self.leave_time:
+            self.stay_time = self.leave_time - self.arrival_time
+            self.total_price = (self.stay_time.total_seconds() / 3600) * self.hourly_price.price
+        self.save()
+        return self.total_price, self.stay_time.total_seconds(), self.vehicle_number

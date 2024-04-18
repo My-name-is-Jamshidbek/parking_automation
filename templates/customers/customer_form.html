@@ -2,11 +2,79 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% if not object %}Add New Customer{% else %}Edit Customer{% endif %}</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">{{ object|yesno:"Update,Create" }}</button>
-    <a href="{% url 'customer-list' %}" class="btn btn-secondary">Back to List</a>
-</form>
+<div class="container mt-3 mb-3">
+    <h2>{% if not object %}Add New Customer{% else %}Edit Customer{% endif %}</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.fullname.id_for_label }}">{{ form.fullname.label }}</label>
+                    <input type="text" name="{{ form.fullname.name }}" id="{{ form.fullname.id_for_label }}" class="form-control" value="{{ form.fullname.value|default_if_none:'' }}">
+                    {% for error in form.fullname.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.seat.id_for_label }}">{{ form.seat.label }}</label>
+                    <select name="{{ form.seat.name }}" id="{{ form.seat.id_for_label }}" class="form-control">
+                        {% for choice in form.seat.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.seat.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.seat.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.arrival_time.id_for_label }}">{{ form.arrival_time.label }}</label>
+                    <input type="datetime-local" name="{{ form.arrival_time.name }}" id="{{ form.arrival_time.id_for_label }}" class="form-control" value="{{ form.arrival_time.value|date:"Y-m-d\TH:i" }}">
+                    {% for error in form.arrival_time.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.vehicle_number.id_for_label }}">{{ form.vehicle_number.label }}</label>
+                    <input type="text" name="{{ form.vehicle_number.name }}" id="{{ form.vehicle_number.id_for_label }}" class="form-control" value="{{ form.vehicle_number.value|default_if_none:'' }}">
+                    {% for error in form.vehicle_number.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.leave_time.id_for_label }}">{{ form.leave_time.label }}</label>
+                    <input type="datetime-local" name="{{ form.leave_time.name }}" id="{{ form.leave_time.id_for_label }}" class="form-control" value="{{ form.leave_time.value|date:"Y-m-d\TH:i" }}" {% if not form.leave_time.value %}disabled{% endif %}>
+                    {% for error in form.leave_time.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.hourly_price.id_for_label }}">{{ form.hourly_price.label }}</label>
+                    <select name="{{ form.hourly_price.name }}" id="{{ form.hourly_price.id_for_label }}" class="form-control">
+                        {% for choice in form.hourly_price.field.choices %}
+                            <option value="{{ choice.0 }}" {% if form.hourly_price.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.hourly_price.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-12">
+            <div class="form-group">
+                <label for="{{ form.carname.id_for_label }}">{{ form.carname.label }}</label>
+                <input type="text" name="{{ form.carname.name }}" id="{{ form.carname.id_for_label }}" class="form-control" value="{{ form.carname.value|default_if_none:'' }}">
+                {% for error in form.carname.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">{{ object|yesno:"Update,Create" }}</button>
+        <a href="{% url 'customer-list' %}" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>
 {% endblock %}

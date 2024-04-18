@@ -2,15 +2,131 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Home
+Home - Parking Management System
 {% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to the Price Management System!</h1>
-    <p class="lead">This is a simple system to manage pricing.</p>
-    <hr class="my-4">
-    <p>Click the button below to view prices.</p>
-    <a class="btn btn-primary btn-lg" href="{% url 'price-list' %}" role="button">View Prices</a>
+<div class="container mt-4 mb-5">
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to the Parking Management System!</h1>
+        <p class="lead">Manage parking slots, pricing strategies, and customer records efficiently.</p>
+        <hr class="my-4">
+        <p>Access various sections below:</p>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Seats</h3>
+                <p>View and manage parking slots.</p>
+                <a class="btn btn-info btn-lg" href="{% url 'seat-list' %}" role="button">View Seats</a>
+            </div>
+            <div class="col-md-4">
+                <h3>Prices</h3>
+                <p>Adjust pricing strategies and details.</p>
+                <a class="btn btn-success btn-lg" href="{% url 'price-list' %}" role="button">View Prices</a>
+            </div>
+            <div class="col-md-4">
+                <h3>Customers</h3>
+                <p>Review customer bookings and statuses.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'customer-list' %}" role="button">View Customers</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Place Name</th>
+                        <th>Explanation</th>
+                        <th>Status</th>
+{#                        <th>Actions</th>#}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seat in seats %}
+                    <tr>
+                        <td>{{ seat.id }}</td>
+                        <td>{{ seat.place_name }}</td>
+                        <td>{{ seat.explanation }}</td>
+                        <td>
+                            {% if seat.status %}
+                                Busy
+                            {% else %}
+                                Not busy
+                            {% endif %}
+                        </td>
+{% comment %}
+                        <td>
+                            <a href="{% url 'seat-update' seat.id %}" class="btn btn-secondary">Edit</a>
+                            <a href="{% url 'seat-delete' seat.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+{% endcomment %}
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4">No seats found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Description</th>
+{#                        <th scope="col">Actions</th>#}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for price in prices %}
+                    <tr>
+                        <th scope="row">{{ price.id }}</th>
+                        <td>{{ price.price }}</td>
+                        <td>{{ price.description }}</td>
+{#                        <td>#}
+{#                            <a href="{% url 'price-update' price.id %}" class="btn btn-secondary btn-sm">Edit</a>#}
+{#                            <a href="{% url 'price-delete' price.id %}" class="btn btn-danger btn-sm">Delete</a>#}
+{#                        </td>#}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">No prices found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Car name</th>
+                        <th>Vehicle number</th>
+{#                        <th>Actions</th>#}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.id }}</td>
+                        <td>{{ customer.fullname }}</td>
+                        <td>{{ customer.carname }}</td>
+                        <td>{{ customer.vehicle_number }}</td>
+{% comment %}
+                        <td>
+                            <a href="{% url 'customer-gone' customer.id %}" class="btn btn-warning">Mark as Gone</a>
+                            <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
+                            <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
+                        </td>
+{% endcomment %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -3,14 +3,18 @@
 
 {% block content %}
 <h2>Price List</h2>
-<a href="{% url 'price-add' %}" class="btn btn-primary mb-2">Add New Price</a>
+{% if request.user.is_staff %}
+    <a href="{% url 'price-add' %}" class="btn btn-primary mb-2">Add New Price</a>
+{% endif %}
 <table class="table">
     <thead class="thead-dark">
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Price</th>
             <th scope="col">Description</th>
-            <th scope="col">Actions</th>
+            {% if request.user.is_staff %}
+                <th scope="col">Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -19,10 +23,12 @@
             <th scope="row">{{ price.id }}</th>
             <td>{{ price.price }}</td>
             <td>{{ price.description }}</td>
-            <td>
-                <a href="{% url 'price-update' price.id %}" class="btn btn-secondary btn-sm">Edit</a>
-                <a href="{% url 'price-delete' price.id %}" class="btn btn-danger btn-sm">Delete</a>
-            </td>
+            {% if request.user.is_staff %}
+                <td>
+                    <a href="{% url 'price-update' price.id %}" class="btn btn-secondary btn-sm">Edit</a>
+                    <a href="{% url 'price-delete' price.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            {% endif %}
         </tr>
         {% empty %}
         <tr>

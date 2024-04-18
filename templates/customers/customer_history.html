@@ -1,0 +1,46 @@
+    <!-- templates/customers/customer_history.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Customer History</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Car Name</th>
+                <th>Vehicle Number</th>
+                <th>Arrival Time</th>
+                <th>Leave Time</th>
+                <th>Hourly Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.fullname }}</td>
+                <td>{{ customer.carname }}</td>
+                <td>{{ customer.vehicle_number }}</td>
+                <td>{{ customer.arrival_time|date:"Y-m-d H:i" }}</td>
+                <td>{{ customer.leave_time|date:"Y-m-d H:i" }}</td>
+                <td>
+                    {% if customer.hourly_price %}
+                        ${{ customer.hourly_price.price }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>${{ customer.total_price }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">No customer history found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

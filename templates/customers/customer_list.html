@@ -3,7 +3,9 @@
 
 {% block content %}
 <h2>Customer List</h2>
-<a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Add New Customer</a>
+{% if request.user.is_staff %}
+    <a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Add New Customer</a>
+{% endif %}
 <table class="table">
     <thead>
         <tr>
@@ -11,7 +13,9 @@
             <th>Full Name</th>
             <th>Car name</th>
             <th>Vehicle number</th>
-            <th>Actions</th>
+            {% if request.user.is_staff %}
+                <th>Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -21,10 +25,13 @@
             <td>{{ customer.fullname }}</td>
             <td>{{ customer.carname }}</td>
             <td>{{ customer.vehicle_number }}</td>
-            <td>
-                <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
-                <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
-            </td>
+            {% if request.user.is_staff %}
+                <td>
+                    <a href="{% url 'customer-gone' customer.id %}" class="btn btn-warning">Mark as Gone</a>
+                    <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
+                    <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
