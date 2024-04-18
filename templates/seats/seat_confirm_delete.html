@@ -2,10 +2,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Are you sure you want to delete "{{ object }}"?</h2>
+<h2>Вы уверены, что хотите удалить "{{ object }}"?</h2>
 <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Yes, delete it</button>
-    <a href="{% url 'seat-list' %}" class="btn btn-secondary">No, take me back</a>
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a href="{% url 'seat-list' %}" class="btn btn-secondary">Нет, верните меня назад</a>
 </form>
 {% endblock %}

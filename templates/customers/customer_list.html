@@ -2,19 +2,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Customer List</h2>
+<h2>Список клиентов</h2>
 {% if request.user.is_staff %}
-    <a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Add New Customer</a>
+    <a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Добавить нового клиента</a>
 {% endif %}
 <table class="table">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Full Name</th>
-            <th>Car name</th>
-            <th>Vehicle number</th>
+            <th>Полное имя</th>
+            <th>Марка автомобиля</th>
+            <th>Номер автомобиля</th>
             {% if request.user.is_staff %}
-                <th>Actions</th>
+                <th>Действия</th>
             {% endif %}
         </tr>
     </thead>
@@ -27,9 +27,9 @@
             <td>{{ customer.vehicle_number }}</td>
             {% if request.user.is_staff %}
                 <td>
-                    <a href="{% url 'customer-gone' customer.id %}" class="btn btn-warning">Mark as Gone</a>
-                    <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
-                    <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'customer-gone' customer.id %}" class="btn btn-warning">Отметить как ушедшего</a>
+                    <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Редактировать</a>
+                    <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Удалить</a>
                 </td>
             {% endif %}
         </tr>

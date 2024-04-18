@@ -3,14 +3,14 @@
 
 {% block content %}
 <div class="container">
-    <h2>Login</h2>
+    <h2>Вход</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button type="submit" class="btn btn-primary">Войти</button>
     </form>
     {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
+        <p>Ваше имя пользователя и пароль не совпадают. Пожалуйста, попробуйте еще раз.</p>
     {% endif %}
 </div>
 {% endblock %}

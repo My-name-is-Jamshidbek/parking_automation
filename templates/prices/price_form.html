@@ -2,11 +2,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% if object %}Edit Price{% else %}Add Price{% endif %}</h2>
+<h2>{% if object %}Редактировать Цену{% else %}Добавить Цену{% endif %}</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Submit</button>
-    <a href="{% url 'price-list' %}" class="btn btn-secondary">Back to List</a>
+    <div class="form-group">
+        <label for="id_price">Цена:</label>
+        <input type="number" name="price" id="id_price" value="{{ object.price }}" class="form-control" required>
+    </div>
+    <div class="form-group">
+        <label for="id_description">Описание:</label>
+        <textarea name="description" id="id_description" class="form-control" required>{{ object.description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success">{{ object|yesno:"Обновить,Создать" }}</button>
+    <a href="{% url 'price-list' %}" class="btn btn-secondary">Назад к списку</a>
 </form>
 {% endblock %}

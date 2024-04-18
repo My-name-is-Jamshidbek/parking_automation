@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="container mt-3">
-    <h2>Available Seats</h2>
+    <h2>Доступные места</h2>
     <table class="table">
         <thead>
             <tr>
-                <th>Seat ID</th>
-                <th>Place Name</th>
-                <th>Explanation</th>
+                <th>ID Места</th>
+                <th>Название Места</th>
+                <th>Описание</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +21,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="3">No available seats found.</td>
+                <td colspan="3">Доступные места не найдены.</td>
             </tr>
             {% endfor %}
         </tbody>

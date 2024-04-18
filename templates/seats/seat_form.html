@@ -2,11 +2,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>{% if object %}Edit Seat{% else %}New Seat{% endif %}</h2>
+<h2>{% if object %}Редактировать Место{% else %}Новое Место{% endif %}</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">{{ object|yesno:"Update,Create" }}</button>
-    <a href="{% url 'seat-list' %}" class="btn btn-secondary">Cancel</a>
+    <div class="form-group">
+        <label for="id_place_name">Название места:</label>
+        <input type="text" name="place_name" id="id_place_name" class="form-control" value="{{ object.place_name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="id_explanation">Описание:</label>
+        <textarea name="explanation" id="id_explanation" class="form-control">{{ object.explanation }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="id_status">Статус:</label>
+        <select name="status" id="id_status" class="form-control" required>
+            <option value="1" {% if object.status %}selected{% endif %}>Занято</option>
+            <option value="0" {% if not object.status %}selected{% endif %}>Свободно</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">{{ object|yesno:"Обновить,Создать" }}</button>
+    <a href="{% url 'seat-list' %}" class="btn btn-secondary">Отмена</a>
 </form>
 {% endblock %}

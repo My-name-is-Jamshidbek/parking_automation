@@ -2,31 +2,31 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Home - Parking Management System
+Дом - Система Управления Парковкой
 {% endblock %}
 
 {% block content %}
 <div class="container mt-4 mb-5">
     <div class="jumbotron">
-        <h1 class="display-4">Welcome to the Parking Management System!</h1>
-        <p class="lead">Manage parking slots, pricing strategies, and customer records efficiently.</p>
+        <h1 class="display-4">Добро пожаловать в Систему Управления Парковкой!</h1>
+        <p class="lead">Управляйте парковочными местами, стратегиями ценообразования и записями клиентов эффективно.</p>
         <hr class="my-4">
-        <p>Access various sections below:</p>
+        <p>Доступ к различным разделам ниже:</p>
         <div class="row">
             <div class="col-md-4">
-                <h3>Seats</h3>
-                <p>View and manage parking slots.</p>
-                <a class="btn btn-info btn-lg" href="{% url 'seat-list' %}" role="button">View Seats</a>
+                <h3>Места</h3>
+                <p>Просмотр и управление парковочными местами.</p>
+                <a class="btn btn-info btn-lg" href="{% url 'seat-list' %}" role="button">Посмотреть места</a>
             </div>
             <div class="col-md-4">
-                <h3>Prices</h3>
-                <p>Adjust pricing strategies and details.</p>
-                <a class="btn btn-success btn-lg" href="{% url 'price-list' %}" role="button">View Prices</a>
+                <h3>Цены</h3>
+                <p>Регулирование стратегий ценообразования и деталей.</p>
+                <a class="btn btn-success btn-lg" href="{% url 'price-list' %}" role="button">Посмотреть цены</a>
             </div>
             <div class="col-md-4">
-                <h3>Customers</h3>
-                <p>Review customer bookings and statuses.</p>
-                <a class="btn btn-primary btn-lg" href="{% url 'customer-list' %}" role="button">View Customers</a>
+                <h3>Клиенты</h3>
+                <p>Ознакомьтесь с бронированиями и статусами клиентов.</p>
+                <a class="btn btn-primary btn-lg" href="{% url 'customer-list' %}" role="button">Посмотреть клиентов</a>
             </div>
         </div>
     </div>
@@ -36,10 +36,9 @@ Home - Parking Management System
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Place Name</th>
-                        <th>Explanation</th>
-                        <th>Status</th>
-{#                        <th>Actions</th>#}
+                        <th>Название места</th>
+                        <th>Описание</th>
+                        <th>Статус</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,20 +49,14 @@ Home - Parking Management System
                         <td>{{ seat.explanation }}</td>
                         <td>
                             {% if seat.status %}
-                                Busy
+                                Занято
                             {% else %}
-                                Not busy
+                                Не занято
                             {% endif %}
                         </td>
-{% comment %}
-                        <td>
-                            <a href="{% url 'seat-update' seat.id %}" class="btn btn-secondary">Edit</a>
-                            <a href="{% url 'seat-delete' seat.id %}" class="btn btn-danger">Delete</a>
-                        </td>
-{% endcomment %}
                     </tr>
                     {% empty %}
-                    <tr><td colspan="4">No seats found.</td></tr>
+                    <tr><td colspan="4">Места не найдены.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -73,9 +66,8 @@ Home - Parking Management System
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Description</th>
-{#                        <th scope="col">Actions</th>#}
+                        <th scope="col">Цена</th>
+                        <th scope="col">Описание</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,14 +76,10 @@ Home - Parking Management System
                         <th scope="row">{{ price.id }}</th>
                         <td>{{ price.price }}</td>
                         <td>{{ price.description }}</td>
-{#                        <td>#}
-{#                            <a href="{% url 'price-update' price.id %}" class="btn btn-secondary btn-sm">Edit</a>#}
-{#                            <a href="{% url 'price-delete' price.id %}" class="btn btn-danger btn-sm">Delete</a>#}
-{#                        </td>#}
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4">No prices found.</td>
+                        <td colspan="4">Цены не найдены.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -102,10 +90,9 @@ Home - Parking Management System
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Full Name</th>
-                        <th>Car name</th>
-                        <th>Vehicle number</th>
-{#                        <th>Actions</th>#}
+                        <th>Полное имя</th>
+                        <th>Марка автомобиля</th>
+                        <th>Номер автомобиля</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,13 +102,6 @@ Home - Parking Management System
                         <td>{{ customer.fullname }}</td>
                         <td>{{ customer.carname }}</td>
                         <td>{{ customer.vehicle_number }}</td>
-{% comment %}
-                        <td>
-                            <a href="{% url 'customer-gone' customer.id %}" class="btn btn-warning">Mark as Gone</a>
-                            <a href="{% url 'customer-update' customer.id %}" class="btn btn-secondary">Edit</a>
-                            <a href="{% url 'customer-delete' customer.id %}" class="btn btn-danger">Delete</a>
-                        </td>
-{% endcomment %}
                     </tr>
                     {% endfor %}
                 </tbody>

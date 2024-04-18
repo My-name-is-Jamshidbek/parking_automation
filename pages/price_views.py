@@ -6,7 +6,6 @@ from .requireds import staff_member_required_or_404
 from .models import Price
 
 
-@method_decorator(staff_member_required_or_404, name='dispatch')
 class PriceListView(ListView):
     model = Price
     context_object_name = 'prices'

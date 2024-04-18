@@ -3,11 +3,11 @@
 
 {% block content %}
 <div class="container mt-3 mb-3">
-    <h2>{% if not object %}Add New Customer{% else %}Edit Customer{% endif %}</h2>
+    <h2>{% if not object %}Добавить нового клиента{% else %}Редактировать клиента{% endif %}</h2>
     <form method="post" class="form">
         {% csrf_token %}
         <div class="row">
-            <!-- Left Column -->
+            <!-- Левая колонка -->
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="{{ form.fullname.id_for_label }}">{{ form.fullname.label }}</label>
@@ -35,7 +35,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <!-- Right Column -->
+            <!-- Правая колонка -->
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="{{ form.vehicle_number.id_for_label }}">{{ form.vehicle_number.label }}</label>
@@ -73,8 +73,8 @@
             </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-success">{{ object|yesno:"Update,Create" }}</button>
-        <a href="{% url 'customer-list' %}" class="btn btn-secondary">Back to List</a>
+        <button type="submit" class="btn btn-success">{{ object|yesno:"Обновить,Создать" }}</button>
+        <a href="{% url 'customer-list' %}" class="btn btn-secondary">Вернуться к списку</a>
     </form>
 </div>
 {% endblock %}

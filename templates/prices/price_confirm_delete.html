@@ -2,11 +2,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Confirm Delete</h2>
-<p>Are you sure you want to delete the price "{{ object }}"?</p>
+<h2>Подтверждение Удаления</h2>
+<p>Вы уверены, что хотите удалить цену "{{ object }}"?</p>
 <form method="post">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a href="{% url 'price-list' %}" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a href="{% url 'price-list' %}" class="btn btn-secondary">Отмена</a>
 </form>
 {% endblock %}

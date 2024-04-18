@@ -2,19 +2,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Seat List</h2>
+<h2>Список Мест</h2>
 {% if request.user.is_staff %}
-    <a href="{% url 'seat-add' %}" class="btn btn-primary">Add New Seat</a>
+    <a href="{% url 'seat-add' %}" class="btn btn-primary">Добавить Новое Место</a>
 {% endif %}
 <table class="table">
     <thead>
         <tr>
             <th>ID</th>
-            <th>Place Name</th>
-            <th>Explanation</th>
-            <th>Status</th>
+            <th>Название Места</th>
+            <th>Описание</th>
+            <th>Статус</th>
             {% if request.user.is_staff %}
-                <th>Actions</th>
+                <th>Действия</th>
             {% endif %}
         </tr>
     </thead>
@@ -26,20 +26,20 @@
             <td>{{ seat.explanation }}</td>
             <td>
                 {% if seat.status %}
-                    Busy
+                    Занято
                 {% else %}
-                    Not busy
+                    Свободно
                 {% endif %}
             </td>
             {% if request.user.is_staff %}
                 <td>
-                    <a href="{% url 'seat-update' seat.id %}" class="btn btn-secondary">Edit</a>
-                    <a href="{% url 'seat-delete' seat.id %}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'seat-update' seat.id %}" class="btn btn-secondary">Редактировать</a>
+                    <a href="{% url 'seat-delete' seat.id %}" class="btn btn-danger">Удалить</a>
                 </td>
             {% endif %}
         </tr>
         {% empty %}
-        <tr><td colspan="4">No seats found.</td></tr>
+        <tr><td colspan="4">Места не найдены.</td></tr>
         {% endfor %}
     </tbody>
 </table>
