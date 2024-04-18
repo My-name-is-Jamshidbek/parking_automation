@@ -1,10 +1,13 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.contrib import messages
+from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, redirect
 from .models import Customer, Seat
+from .requireds import staff_member_required_or_404
 
 
+@method_decorator(staff_member_required_or_404, name='dispatch')
 class CustomerCreateView(CreateView):
     model = Customer
     fields = ['fullname', 'seat', 'vehicle_number', 'arrival_time', 'leave_time', 'hourly_price', 'carname']

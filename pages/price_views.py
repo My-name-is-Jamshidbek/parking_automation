@@ -1,21 +1,19 @@
 # views.py
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import get_object_or_404
-
+from .requireds import staff_member_required_or_404
 from .models import Price
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required_or_404, name='dispatch')
 class PriceListView(ListView):
     model = Price
     context_object_name = 'prices'
     template_name = 'prices/price_list.html'
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required_or_404, name='dispatch')
 class PriceCreateView(CreateView):
     model = Price
     fields = ['price', 'description']
@@ -23,7 +21,7 @@ class PriceCreateView(CreateView):
     success_url = reverse_lazy('price-list')
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required_or_404, name='dispatch')
 class PriceUpdateView(UpdateView):
     model = Price
     fields = ['price', 'description']
@@ -32,7 +30,7 @@ class PriceUpdateView(UpdateView):
     success_url = reverse_lazy('price-list')
 
 
-@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(staff_member_required_or_404, name='dispatch')
 class PriceDeleteView(DeleteView):
     model = Price
     context_object_name = 'price'
