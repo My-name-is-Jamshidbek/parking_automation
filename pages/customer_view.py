@@ -1,4 +1,6 @@
 from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.timezone import make_naive
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView
 from django.contrib import messages
 from django.utils.decorators import method_decorator
@@ -62,13 +64,66 @@ class CustomerUpdateView(UpdateView):
         return reverse_lazy('customer-list')
 
 
+from django.views.generic import ListView
+from django.http import HttpResponse
+from .models import Customer
+import pandas as pd
+from django.utils.timezone import make_aware
+from datetime import datetime
+
 class CustomerListView(ListView):
     model = Customer
     template_name = 'customers/customer_list.html'
+    context_object_name = 'customers'
 
-    def get_queryset(self):
-        # Filter customers where total_price is 0 and stay_time is None
-        return Customer.objects.filter(total_price=0, stay_time__isnull=True)
+    def get_queryset(self, year=None, month=None):
+        """ Modify queryset to filter by year and month of arrival_time if specified. """
+        queryset = Customer.objects.filter()
+        if year and month:
+            start_date = make_aware(datetime(year, month, 1))
+            if month == 12:
+                end_date = make_aware(datetime(year + 1, 1, 1))
+            else:
+                end_date = make_aware(datetime(year, month + 1, 1))
+            queryset = queryset.filter(arrival_time__range=(start_date, end_date))
+        return queryset
+
+    def post(self, request, *args, **kwargs):
+        month_year = request.POST.get('monthYear', '')  # Assuming input is in 'MM-YYYY' format
+        if month_year:
+            try:
+                month, year = int(month_year.split("-")[0]), int(month_year.split("-")[1])
+                self.object_list = self.get_queryset(year=year, month=month)  # Set the object_list
+                df = pd.DataFrame(list(self.object_list.values()))
+
+                # Convert timezone-aware datetime fields to timezone-naive before exporting to Excel
+                df['arrival_time'] = df['arrival_time'].apply(lambda x: make_naive(x, timezone.get_current_timezone()))
+                if 'leave_time' in df.columns:
+                    df['leave_time'] = df['leave_time'].apply(
+                        lambda x: make_naive(x, timezone.get_current_timezone()) if pd.notnull(x) else x)
+
+                # Export to Excel logic here
+                response = HttpResponse(
+                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                )
+                response['Content-Disposition'] = f'attachment; filename="customer_data_{year}_{month}.xlsx"'
+
+                with pd.ExcelWriter(response, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False, sheet_name='Filtered Customers')
+
+                return response
+            except ValueError:
+                # Handle invalid input format
+                return self.render_to_response(
+                    self.get_context_data(error="Invalid date format. Please use MM-YYYY format."))
+
+        # Handle case where monthYear is not provided or invalid
+        self.object_list = self.get_queryset()  # Ensure this is set even if no POST data or invalid
+        return self.render_to_response(self.get_context_data())
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['error'] = kwargs.get('error', '')  # Pass error messages if any
+        return context
 
 
 class CustomerDeleteView(DeleteView):

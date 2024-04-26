@@ -3,6 +3,30 @@
 
 {% block content %}
 <h2>Список клиентов</h2>
+
+<div class="container m-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Select Month and Year for Customer Data</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="monthYearPicker">Month and Year</label>
+                            <input type="text" id="monthYearPicker" name="monthYear" class="form-control" autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Download Data</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
 {% if request.user.is_staff %}
     <a href="{% url 'customer-add' %}" class="btn btn-primary mb-2">Добавить нового клиента</a>
 {% endif %}
