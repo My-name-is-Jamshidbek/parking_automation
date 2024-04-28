@@ -7,6 +7,13 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404, redirect
 from .models import Customer, Seat
 from .requireds import staff_member_required_or_404
+from openpyxl.styles import Alignment, Font
+from django.views.generic import ListView
+from django.http import HttpResponse
+from .models import Customer
+import pandas as pd
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 
 @method_decorator(staff_member_required_or_404, name='dispatch')
@@ -64,67 +71,82 @@ class CustomerUpdateView(UpdateView):
         return reverse_lazy('customer-list')
 
 
-from django.views.generic import ListView
-from django.http import HttpResponse
-from .models import Customer
-import pandas as pd
-from django.utils.timezone import make_aware
-from datetime import datetime
-
 class CustomerListView(ListView):
     model = Customer
     template_name = 'customers/customer_list.html'
     context_object_name = 'customers'
 
-    def get_queryset(self, year=None, month=None):
-        """ Modify queryset to filter by year and month of arrival_time if specified. """
-        queryset = Customer.objects.filter()
-        if year and month:
-            start_date = make_aware(datetime(year, month, 1))
-            if month == 12:
-                end_date = make_aware(datetime(year + 1, 1, 1))
-            else:
-                end_date = make_aware(datetime(year, month + 1, 1))
-            queryset = queryset.filter(arrival_time__range=(start_date, end_date))
-        return queryset
+    def get_queryset(self):
+        """ Default queryset for GET request. """
+        return Customer.objects.all()
+
+    def filter_queryset_by_date(self, year, month):
+        """ Filter the queryset based on year and month. """
+        start_date = make_aware(datetime(year, month, 1))
+        end_date = make_aware(datetime(year, month + 1, 1)) if month < 12 else make_aware(datetime(year + 1, 1, 1))
+        return Customer.objects.filter(arrival_time__range=(start_date, end_date))
 
     def post(self, request, *args, **kwargs):
-        month_year = request.POST.get('monthYear', '')  # Assuming input is in 'MM-YYYY' format
+        month_year = request.POST.get('monthYear', '')
         if month_year:
             try:
                 month, year = int(month_year.split("-")[0]), int(month_year.split("-")[1])
-                self.object_list = self.get_queryset(year=year, month=month)  # Set the object_list
-                df = pd.DataFrame(list(self.object_list.values()))
+                filtered_customers = self.filter_queryset_by_date(year, month)
+
+                df = pd.DataFrame(list(filtered_customers.values(
+                    'fullname', 'carname', 'arrival_time', 'leave_time', 'hourly_price', 'seat'  # Specify other fields as required
+                )))
 
                 # Convert timezone-aware datetime fields to timezone-naive before exporting to Excel
-                df['arrival_time'] = df['arrival_time'].apply(lambda x: make_naive(x, timezone.get_current_timezone()))
-                if 'leave_time' in df.columns:
+                if 'arrival_time' in df:
+                    df['arrival_time'] = df['arrival_time'].apply(lambda x: make_naive(x, timezone.get_current_timezone()))
+                if 'leave_time' in df:
                     df['leave_time'] = df['leave_time'].apply(
                         lambda x: make_naive(x, timezone.get_current_timezone()) if pd.notnull(x) else x)
 
-                # Export to Excel logic here
+                # Set up the HTTP response as an Excel file
                 response = HttpResponse(
                     content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 )
                 response['Content-Disposition'] = f'attachment; filename="customer_data_{year}_{month}.xlsx"'
 
+                # Save DataFrame to Excel
+                # Export to Excel and set column widths
                 with pd.ExcelWriter(response, engine='openpyxl') as writer:
                     df.to_excel(writer, index=False, sheet_name='Filtered Customers')
+                    workbook = writer.book
+                    worksheet = writer.sheets['Filtered Customers']
+
+                    # Adjust column widths based on the longest entry in each column
+                    for column_cells in worksheet.columns:
+                        length = max(len(str(cell.value)) for cell in column_cells)
+                        worksheet.column_dimensions[column_cells[0].column_letter].width = length+5
+
+                    # Set a default font and alignment for all cells
+                    for row in worksheet.iter_rows():
+                        for cell in row:
+                            cell.alignment = Alignment(horizontal='center', vertical='center')
+                            cell.font = Font(name='Calibri', size=12)
+                    names = ['Полное имя', 'Название автомобиля', 'Время прибытия', 'Оставьте время', 'Почасовая цена',
+                             'Место']
+                    for index, name in enumerate(names, start=1):
+                        cell_reference = worksheet.cell(row=1,
+                                                        column=index)  # This targets cells A1, B1, C1, etc., dynamically
+                        cell_reference.value = name
+                        cell_reference.font = Font(bold=True)  # Optional: Make header bold
 
                 return response
             except ValueError:
-                # Handle invalid input format
-                return self.render_to_response(
-                    self.get_context_data(error="Invalid date format. Please use MM-YYYY format."))
+                context = self.get_context_data(error="Invalid date format. Please use MM-YYYY format.")
+                return self.render_to_response(context)
 
-        # Handle case where monthYear is not provided or invalid
-        self.object_list = self.get_queryset()  # Ensure this is set even if no POST data or invalid
+        # If POST data is incorrect or missing, simply render the list
         return self.render_to_response(self.get_context_data())
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['error'] = kwargs.get('error', '')  # Pass error messages if any
+        context['error'] = kwargs.get('error', '')
         return context
-
 
 class CustomerDeleteView(DeleteView):
     model = Customer

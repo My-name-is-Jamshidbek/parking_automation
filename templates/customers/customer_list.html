@@ -9,16 +9,16 @@
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header">
-                    <h5>Select Month and Year for Customer Data</h5>
+                    <h5>Выберите месяц и год для данных о клиентах</h5>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
                         <div class="form-group">
-                            <label for="monthYearPicker">Month and Year</label>
+                            <label for="monthYearPicker">Месяц и Год</label>
                             <input type="text" id="monthYearPicker" name="monthYear" class="form-control" autocomplete="off">
                         </div>
-                        <button type="submit" class="btn btn-primary">Download Data</button>
+                        <button type="submit" class="btn btn-primary">Скачать данные</button>
                     </form>
                 </div>
             </div>
