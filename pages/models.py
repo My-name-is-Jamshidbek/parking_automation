@@ -29,12 +29,12 @@ class Seat(models.Model):
 class Customer(models.Model):
     fullname = models.CharField(max_length=255, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, editable=False)
-    seat = models.ForeignKey('Seat', on_delete=models.CASCADE, default=Seat.objects.first().pk)
+    seat = models.ForeignKey('Seat', on_delete=models.CASCADE)
     vehicle_number = models.CharField(max_length=255)
     arrival_time = models.DateTimeField(default=timezone.now)
     leave_time = models.DateTimeField(null=True, blank=True, default=timezone.now() + datetime.timedelta(hours=2))
     stay_time = models.DurationField(null=True, blank=True, editable=False)
-    hourly_price = models.ForeignKey('Price', on_delete=models.SET_NULL, null=True, default=Price.objects.first().pk)
+    hourly_price = models.ForeignKey('Price', on_delete=models.SET_NULL, null=True)
     total_price = models.BigIntegerField(default=0, editable=False)
     carname = models.CharField(max_length=255, null=True, blank=True)
 
